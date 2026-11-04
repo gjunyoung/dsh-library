@@ -100,7 +100,9 @@ node --test "test/*.test.js"
 
 ### 许可证
 
-未附许可证（保留所有权利）。
+[MIT](./LICENSE) © 2026 gjunyoung
+
+可以自由使用、修改、分发（包括商业用途），只需保留版权声明与许可证文本；软件按“原样”提供，不含任何担保。
 
 ---
 
@@ -199,4 +201,6 @@ The client half may only `require('react')`; everything it needs from Harness go
 
 ### License
 
-No license is provided (all rights reserved).
+[MIT](./LICENSE) © 2026 gjunyoung
+
+Use, modify and redistribute freely (commercial use included) as long as the copyright notice and license text stay with it. The software is provided “as is”, without warranty.
