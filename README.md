@@ -1,5 +1,7 @@
 # 资料库（Library）· DeepSeek Harness 插件
 
+> 一个本地文件库插件：上传、预览、收藏、批量导出，并能把库里的文件作为附件发到聊天。
+
 [中文](#中文) · [English](#english)
 
 ---
@@ -64,6 +66,10 @@
 - **迁移**：设置 → 资料库 → 填入新目录绝对路径 → 迁移。会搬运文件、校验后删除旧目录里的库数据，并记住新位置（重启仍生效）。
 - **重建索引**：用磁盘上的字节重写 `index.json`。索引损坏、或手动动过目录时使用；索引里没有的文件会以 `recovered-<hash前8位>` 出现，原名与收藏信息无法恢复。
 
+设置 → 资料库（存储位置、迁移、重建索引）：
+
+![设置页](./docs/settings.png)
+
 ### 已知限制
 
 - **Office 走 PDF**：docx / xlsx / pptx 由 Harness 内置的转换能力转成 PDF 显示，不解析原始表格；Excel 的公式、图表不会单独渲染。
@@ -99,6 +105,8 @@ node --test "test/*.test.js"
 ---
 
 ## English
+
+> A local file library for DeepSeek Harness: upload, preview, favourite, batch export, and attach files to chat.
 
 A local file library for DeepSeek Harness: upload, browse, preview, favourite and batch-export files, wired into the chat — deliverables an agent presents are archived automatically, and library files can be attached to a message. It is a pure plugin: nothing in Harness itself changes.
 
@@ -157,6 +165,10 @@ The first start creates the archive at `~/.dsh/library` (`C:\Users\<you>\.dsh\li
 - **Backup** — copy the whole directory; restore it to the same path.
 - **Move** — Settings → Library → enter an absolute target directory. Files are copied, verified, and the old library data is removed; the new location is remembered across restarts.
 - **Rebuild index** — rewrites `index.json` from the bytes on disk. Use it when the index is damaged or the directory was edited by hand; files unknown to the index come back as `recovered-<first 8 hash chars>` and lose their original name and favourites.
+
+Settings → Library (location, move, rebuild index):
+
+![Settings page](./docs/settings.png)
 
 ### Known limitations
 
