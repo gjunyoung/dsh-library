@@ -1,6 +1,6 @@
 {
   "name": "@local/dsh-library",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "private": true,
   "description": "Local file archive: upload, browse, preview and reuse files inside DeepSeek Harness.",

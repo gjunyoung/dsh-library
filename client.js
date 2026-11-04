@@ -1555,13 +1555,14 @@ window.__ModuleLoader__.load({
 
       const openMoveFolder = (item) => setFavoriteDialog({ records: [item], mode: 'move' })
 
-      const applyFavorite = async (records, collectionId) => {
+      const applyFavorite = async (records, collectionId, fromBatch) => {
         try {
           await api('/library/api/files', {
             method: 'PATCH',
             body: { ids: records.map((record) => record.id), favorited: true, collectionId },
           })
           setFavoriteDialog(null)
+          if (fromBatch === true) setSelected(new Map())
           await load('replace')
           libraryChanged.emit()
           const name =
@@ -1574,13 +1575,14 @@ window.__ModuleLoader__.load({
         }
       }
 
-      const removeFavorite = async (records) => {
+      const removeFavorite = async (records, fromBatch) => {
         try {
           await api('/library/api/files', {
             method: 'PATCH',
             body: { ids: records.map((record) => record.id), favorited: false },
           })
           setFavoriteDialog(null)
+          if (fromBatch === true) setSelected(new Map())
           await load('replace')
           libraryChanged.emit()
           setToast(tt('unfavoritedToast'))
@@ -1769,7 +1771,9 @@ window.__ModuleLoader__.load({
 
       const batchMove = () => {
         const records = selectedRecords()
-        if (records.length > 0) setFavoriteDialog({ records, mode: 'move' })
+        // fromBatch marks the action as coming from the batch bar, so finishing it
+        // also clears the checkboxes (a row-action must keep them).
+        if (records.length > 0) setFavoriteDialog({ records, mode: 'move', fromBatch: true })
       }
 
 
@@ -2368,8 +2372,9 @@ window.__ModuleLoader__.load({
               records: favoriteDialog.records,
               mode: favoriteDialog.mode,
               collections,
-              onPick: (collectionId) => void applyFavorite(favoriteDialog.records, collectionId),
-              onRemove: () => void removeFavorite(favoriteDialog.records),
+              onPick: (collectionId) =>
+                void applyFavorite(favoriteDialog.records, collectionId, favoriteDialog.fromBatch === true),
+              onRemove: () => void removeFavorite(favoriteDialog.records, favoriteDialog.fromBatch === true),
               onCancel: () => setFavoriteDialog(null),
             }),        confirming === null
           ? null
