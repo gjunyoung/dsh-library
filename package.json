@@ -1,0 +1,33 @@
+{
+  "name": "@local/dsh-library",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local file archive: upload, browse, preview and reuse files inside DeepSeek Harness.",
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "lib/*.js",
+    "locale/*.json",
+    "icon.svg"
+  ],
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ]
+    }
+  }
+}
