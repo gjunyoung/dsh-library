@@ -1,8 +1,21 @@
 {
   "name": "@local/dsh-library",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "license": "MIT",
   "private": true,
   "description": "Local file archive: upload, browse, preview and reuse files inside DeepSeek Harness.",
+  "keywords": [
+    "deepseek-harness",
+    "dsh-plugin",
+    "plugin",
+    "file-manager",
+    "library"
+  ],
+  "homepage": "https://github.com/gjunyoung/dsh-library#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gjunyoung/dsh-library.git"
+  },
   "type": "module",
   "exports": {
     ".": "./index.js",
@@ -20,7 +33,9 @@
     "icon.svg"
   ],
   "dsh": {
-    "bundle": { "patch": "./cordis.patch.yml" },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
     "client": {
       "platform": "web",
       "immediately": true,
