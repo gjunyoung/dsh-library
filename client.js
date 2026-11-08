@@ -450,19 +450,32 @@ window.__ModuleLoader__.load({
     let hostProbe = null
 
     function candidateOrigins() {
-      const list = []
+      // The Host port changes between launches, and the desktop shell may load the
+      // page from its own scheme. Try the page's own origin first (a relative URL),
+      // then every origin the boot payload mentions, then the historical default.
+      const list = ['']
       try {
         if (/^https?:$/.test(location.protocol)) list.push(location.origin)
       } catch {
-        // No location: fall through to the fixed candidates.
+        // No location: fall through to the other candidates.
       }
       try {
-        const boot = typeof window === 'undefined' ? undefined : window.__DSH_BOOT__
-        const text = boot === undefined ? '' : JSON.stringify(boot)
-        for (const match of text.match(/https?:\/\/127\.0\.0\.1:\d+/g) ?? []) list.push(match)
-        for (const match of text.match(/https?:\/\/localhost:\d+/g) ?? []) list.push(match)
+        // The desktop shell publishes its owned Host origin as
+        // __DSH_TRANSPORT__.streamBaseUrl; the web boot graph carries bundle URLs.
+        const globals = typeof window === 'undefined' ? {} : window
+        const payloads = [globals.__DSH_TRANSPORT__, globals.__DSH_BOOT__]
+          .filter((value) => value !== undefined && value !== null)
+          .map((value) => JSON.stringify(value))
+          .join(' ')
+        for (const match of payloads.match(/https?:\/\/[^"'\\\s]+/g) ?? []) {
+          try {
+            list.push(new URL(match).origin)
+          } catch {
+            // Not a usable URL: skip it.
+          }
+        }
       } catch {
-        // A malformed boot payload is not fatal.
+        // A malformed globals payload is not fatal.
       }
       list.push('http://127.0.0.1:50257', 'http://localhost:50257')
       return Array.from(new Set(list))
@@ -470,7 +483,8 @@ window.__ModuleLoader__.load({
 
     async function resolveHost() {
       if (hostOrigin !== null) return hostOrigin
-      hostProbe ??= (async () => {
+      if (hostProbe !== null) return hostProbe
+      hostProbe = (async () => {
         for (const origin of candidateOrigins()) {
           try {
             const response = await fetch(`${origin}/library/health`, { cache: 'no-store', mode: 'cors' })
@@ -486,7 +500,14 @@ window.__ModuleLoader__.load({
         }
         throw new Error('library host unreachable')
       })()
-      return hostProbe
+      try {
+        return await hostProbe
+      } catch (error) {
+        // Never keep a rejected probe: the Host may still be starting, or it may
+        // have just moved to another port. The next call probes again.
+        hostProbe = null
+        throw error
+      }
     }
 
     async function api(path, options = {}) {
